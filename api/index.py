@@ -2,6 +2,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pyproj
+import httpx
 
 # FastAPI 앱 생성
 app = FastAPI()
