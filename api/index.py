@@ -74,3 +74,31 @@ def convert_wgs84_to_katec(lon: float, lat: float):
         return {"x": x, "y": y}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+# ✅ [추가] Opinet API를 위한 프록시 엔드포인트
+@app.get("/api/nearby-gas-stations")
+async def get_nearby_gas_stations(x: float, y: float, radius: int = 5000, prodcd: str = "B027"):
+    OPINET_API_URL = "https://www.opinet.co.kr/api/aroundAll.do"
+    # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
+    OPINET_API_KEY = "F250930867" 
+
+    params = {
+        "code": OPINET_API_KEY,
+        "x": x,
+        "y": y,
+        "radius": radius,
+        "prodcd": prodcd,
+        "out": "xml"
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
