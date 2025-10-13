@@ -27,7 +27,7 @@ app.add_middleware(
 # --- CORS 설정 끝 ---
 
 # 좌표계 정의
-KATEC = "+proj=tmerc +lat_0=38N +lon_0=128E +ellps=bessel +x_0=400000 +y_0=600000 +k=0.9999 +units=m +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43"
+KATEC = "+proj=tmerc +lat_0=38 +lon_0=128 +k=0.9999 +x_0=400000 +y_0=600000 +ellps=bessel +units=m +no_defs"
 WGS84 = "+proj=latlong +datum=WGS84 +ellps=WGS84"
 
 # CRS 객체 생성
