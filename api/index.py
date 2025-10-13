@@ -11,7 +11,7 @@ origins = [
     "http://127.0.0.1:5500", # 로컬 테스트 환경 주소
     "http://localhost:5500",  # 다른 로컬 주소 형식
     "null",                   # 로컬에서 파일을 직접 열었을 때의 origin
-    "https://kakao-map-opinet-g-sprice-m9v17fwva-jaeminkims-projects.vercel.app/"
+    "https://kakao-map-opinet-g-sprice-m9v17fwva-jaeminkims-projects.vercel.app"
     # 나중에 실제 웹사이트를 배포한다면 그 주소도 추가해줘야 합니다.
     # 예: "https://my-awesome-map-project.com"
 ]
