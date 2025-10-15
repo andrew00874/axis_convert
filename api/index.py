@@ -103,7 +103,7 @@ async def get_nearby_gas_stations(x: float, y: float, radius: int = 5000, prodcd
         except httpx.HTTPStatusError as exc:
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
 
-@app.get("/api/detailById")
+@app.get("/api/detail-by-id")
 async def detail_by_id(uid: str):
     OPINET_API_URL = "https://www.opinet.co.kr/api/detailById.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
