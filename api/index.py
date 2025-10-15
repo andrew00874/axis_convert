@@ -126,3 +126,50 @@ async def detail_by_id(uid: str):
             raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
         except httpx.HTTPStatusError as exc:
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
+        
+@app.get("/api/avg-sido-price")
+async def avg_sido_price():
+    OPINET_API_URL = "https://www.opinet.co.kr/api/avgSidoPrice.do"
+    # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
+    OPINET_API_KEY = "F250930867" 
+
+    params = {
+        "code": OPINET_API_KEY,
+        "out": "xml"
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
+
+@app.get("/api/lowtop10")
+async def avg_sido_price(prodcd: str, area: str, cnt: int):
+    OPINET_API_URL = "https://www.opinet.co.kr/api/lowTop10.do"
+    # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
+    OPINET_API_KEY = "F250930867" 
+
+    params = {
+        "code": OPINET_API_KEY,
+        "out": "xml",
+        "prodcd": prodcd,
+        "area": area,
+        "cnt": cnt
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
