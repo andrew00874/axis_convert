@@ -149,7 +149,7 @@ async def avg_sido_price():
         except httpx.HTTPStatusError as exc:
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
 
-@app.get("/api/lowtop10")
+@app.get("/api/low-top-10")
 async def avg_sido_price(prodcd: str, area: str, cnt: int):
     OPINET_API_URL = "https://www.opinet.co.kr/api/lowTop10.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
