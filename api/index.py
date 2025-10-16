@@ -55,7 +55,7 @@ def read_root():
             "/api/low-top-10?prodcd={product_code}&area={area_code}&cnt={count}"
         ]
     }
-
+  
 @app.get("/katec-to-wgs84")
 def convert_katec_to_wgs84(x: float, y: float):
     """
