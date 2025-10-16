@@ -48,7 +48,11 @@ def read_root():
         "message": "Coordinate Conversion API",
         "endpoints": [
             "/katec-to-wgs84?x={x_coord}&y={y_coord}",
-            "/wgs84-to-katec?lon={longitude}&lat={latitude}"
+            "/wgs84-to-katec?lon={longitude}&lat={latitude}",
+            "/api/nearby-gas-stations?x={katec_x}&y={katec_y}&radius={meters}&prodcd={product_code}",
+            "/api/detail-by-id?uid={station_id}",
+            "/api/avg-sido-price",
+            "/api/low-top-10?prodcd={product_code}&area={area_code}&cnt={count}"
         ]
     }
 
