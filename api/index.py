@@ -49,10 +49,10 @@ def read_root():
         "endpoints": [
             "/katec-to-wgs84?x={x_coord}&y={y_coord}",
             "/wgs84-to-katec?lon={longitude}&lat={latitude}",
-            "/api/nearby-gas-stations?x={katec_x}&y={katec_y}&radius={meters}&prodcd={product_code}",
-            "/api/detail-by-id?uid={station_id}",
-            "/api/avg-sido-price",
-            "/api/low-top-10?prodcd={product_code}&area={area_code}&cnt={count}"
+            "/api/nearby-gas-stations?key={api_key}&x={katec_x}&y={katec_y}&radius={meters}&prodcd={product_code}",
+            "/api/detail-by-id?key={api_key}&uid={station_id}",
+            "/api/avg-sido-price?key={api_key}",
+            "/api/low-top-10?key={api_key}&prodcd={product_code}&area={area_code}&cnt={count}"
         ]
     }
   
@@ -81,13 +81,12 @@ def convert_wgs84_to_katec(lon: float, lat: float):
     
 # ✅ [추가] Opinet API를 위한 프록시 엔드포인트
 @app.get("/api/nearby-gas-stations")
-async def get_nearby_gas_stations(x: float, y: float, radius: int = 5000, prodcd: str = "B027"):
+async def get_nearby_gas_stations(api_key: str,x: float, y: float, radius: int = 5000, prodcd: str = "B027"):
     OPINET_API_URL = "https://www.opinet.co.kr/api/aroundAll.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
-    OPINET_API_KEY = "F250930867" 
 
     params = {
-        "code": OPINET_API_KEY,
+        "code": api_key,
         "x": x,
         "y": y,
         "radius": radius,
@@ -108,13 +107,12 @@ async def get_nearby_gas_stations(x: float, y: float, radius: int = 5000, prodcd
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
 
 @app.get("/api/detail-by-id")
-async def detail_by_id(uid: str):
+async def detail_by_id(api_key: str,uid: str):
     OPINET_API_URL = "https://www.opinet.co.kr/api/detailById.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
-    OPINET_API_KEY = "F250930867" 
 
     params = {
-        "code": OPINET_API_KEY,
+        "code": api_key,
         "id": uid,
         "out": "xml"
     }
@@ -132,13 +130,12 @@ async def detail_by_id(uid: str):
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
         
 @app.get("/api/avg-sido-price")
-async def avg_sido_price():
+async def avg_sido_price(api_key: str):
     OPINET_API_URL = "https://www.opinet.co.kr/api/avgSidoPrice.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
-    OPINET_API_KEY = "F250930867" 
 
     params = {
-        "code": OPINET_API_KEY,
+        "code": api_key,
         "out": "xml"
     }
     async with httpx.AsyncClient() as client:
@@ -154,13 +151,12 @@ async def avg_sido_price():
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
 
 @app.get("/api/low-top-10")
-async def avg_sido_price(prodcd: str, area: str, cnt: int):
+async def avg_sido_price(api_key: str, prodcd: str, area: str, cnt: int):
     OPINET_API_URL = "https://www.opinet.co.kr/api/lowTop10.do"
     # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
-    OPINET_API_KEY = "F250930867" 
 
     params = {
-        "code": OPINET_API_KEY,
+        "code": api_key,
         "out": "xml",
         "prodcd": prodcd,
         "area": area,
