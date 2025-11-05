@@ -53,6 +53,10 @@ def read_root():
             "/api/detail-by-id?key={api_key}&uid={station_id}",
             "/api/avg-sido-price?key={api_key}",
             "/api/low-top-10?key={api_key}&prodcd={product_code}&area={area_code}&cnt={count}"
+            "/api/avg-all-price?key={api_key}",
+            "/api/avg-recent-price?key={api_key}",
+            "/api/avg-sido-price?key={api_key}&area={area}",
+            "/api/area-avg-recent-price?key={api_key}&area={area}",
         ]
     }
   
@@ -132,7 +136,26 @@ async def detail_by_id(api_key: str,uid: str):
 @app.get("/api/avg-sido-price")
 async def avg_sido_price(api_key: str):
     OPINET_API_URL = "https://www.opinet.co.kr/api/avgSidoPrice.do"
-    # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
+
+    params = {
+        "code": api_key,
+        "out": "xml"
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
+        
+@app.get("/api/avg-recent-price")
+async def avg_recent_price(api_key: str):
+    OPINET_API_URL = "https://www.opinet.co.kr/api/avgRecentPrice.do"
 
     params = {
         "code": api_key,
@@ -150,10 +173,50 @@ async def avg_sido_price(api_key: str):
         except httpx.HTTPStatusError as exc:
             raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
 
+@app.get("/api/avg-all-price")
+async def avg_all_price(api_key: str):
+    OPINET_API_URL = "https://www.opinet.co.kr/api/avgAllPrice.do"
+
+    params = {
+        "code": api_key,
+        "out": "xml"
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
+
+@app.get("/api/area-avg-recent-price")
+async def avg_sido_price(api_key: str, area: str):
+    OPINET_API_URL = "https://www.opinet.co.kr/api/areaAvgRecentPrice.do"
+
+    params = {
+        "area": area,
+        "code": api_key,
+        "out": "xml"
+    }
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(OPINET_API_URL, params=params)
+            response.raise_for_status() # HTTP 에러 발생 시 예외 처리
+            # Opinet이 XML을 반환하므로, 그대로 클라이언트에 전달합니다.
+            # 하지만 FastAPI는 기본적으로 JSON을 반환하므로, XML을 텍스트로 감싸서 JSON으로 보냅니다.
+            return {"xml_data": response.text}
+        except httpx.RequestError as exc:
+            raise HTTPException(status_code=400, detail=f"Opinet API 요청 실패: {exc}")
+        except httpx.HTTPStatusError as exc:
+            raise HTTPException(status_code=exc.response.status_code, detail=f"Opinet API 에러: {exc.response.text}")
+        
 @app.get("/api/low-top-10")
 async def avg_sido_price(api_key: str, prodcd: str, area: str, cnt: int):
     OPINET_API_URL = "https://www.opinet.co.kr/api/lowTop10.do"
-    # 중요: 실제 서비스에서는 API 키를 코드에 직접 넣지 않고 환경 변수로 관리하는 것이 안전합니다.
 
     params = {
         "code": api_key,
